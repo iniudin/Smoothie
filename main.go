@@ -51,7 +51,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 func handleRequest() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeHandler)
-	router.HandleFunc("/smoothie", allSmoothie).Methods("GET")
+	router.HandleFunc("/smoothies", allSmoothie).Methods("GET")
+	router.HandleFunc("/smoothie", addSmoothie).Methods("POST")
 	router.HandleFunc("/smoothie/{id}", showSmoothie).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
