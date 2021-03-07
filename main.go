@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -30,6 +31,18 @@ func showSmoothie(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(smoothie)
 		}
 	}
+}
+func addSmoothie(w http.ResponseWriter, r *http.Request) {
+	// Mengambil body dari POST
+	// Unmarshall ke Smoothie struct
+	// Tambahkan ke array Smoothies
+	body, _ := ioutil.ReadAll(r.Body)
+	var smoothie Smoothie
+
+	json.Unmarshal(body, &smoothie)
+	// update Array Smoothies
+	Smoothies = append(Smoothies, smoothie)
+	json.NewEncoder(w).Encode(smoothie)
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
