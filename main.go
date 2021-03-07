@@ -11,6 +11,7 @@ import (
 
 // Smoothie struct untuk respont json
 type Smoothie struct {
+	ID          string   `json:"id"`
 	Name        string   `json:"name"`
 	Ingredients []string `json:"inggredients"`
 }
@@ -18,24 +19,34 @@ type Smoothie struct {
 // Smoothies adalah kumpulan dari smoothie
 var Smoothies []Smoothie
 
-func returnAllSmothies(w http.ResponseWriter, r *http.Request) {
+func allSmoothie(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Smoothies)
 }
+func showSmoothie(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	key := vars["id"]
+	for _, smoothie := range Smoothies {
+		if smoothie.ID == key {
+			json.NewEncoder(w).Encode(smoothie)
+		}
+	}
+}
 
-func homePage(w http.ResponseWriter, r *http.Request) {
+func homeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Jualan Minooman")
 }
 func handleRequest() {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", homePage)
-	router.HandleFunc("/smoothies", returnAllSmothies)
+	router.HandleFunc("/", homeHandler)
+	router.HandleFunc("/smoothie", allSmoothie).Methods("GET")
+	router.HandleFunc("/smoothie/{id}", showSmoothie).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
 func main() {
 	Smoothies = []Smoothie{
-		{Name: "Es Jeruk", Ingredients: []string{"Air dingin", "Jeruk"}},
-		{Name: "Es Teh", Ingredients: []string{"Air dingin", "Teh"}},
+		{ID: "1", Name: "Es Jeruk", Ingredients: []string{"Air dingin", "Jeruk"}},
+		{ID: "2", Name: "Es Teh", Ingredients: []string{"Air dingin", "Teh"}},
 	}
 	handleRequest()
 }
