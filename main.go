@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // Smoothie struct untuk respont json
@@ -24,9 +26,10 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Jualan Minooman")
 }
 func handleRequest() {
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/minooman", returnAllSmothies)
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", homePage)
+	router.HandleFunc("/smoothies", returnAllSmothies)
+	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
 func main() {
