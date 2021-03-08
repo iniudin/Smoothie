@@ -24,8 +24,11 @@ func allSmoothie(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Smoothies)
 }
 func showSmoothie(w http.ResponseWriter, r *http.Request) {
+	// mengambil parameter dari vars
 	vars := mux.Vars(r)
+	// ambill key id
 	key := vars["id"]
+	// looping dan cek id yang sama dengan key
 	for _, smoothie := range Smoothies {
 		if smoothie.ID == key {
 			json.NewEncoder(w).Encode(smoothie)
@@ -43,6 +46,22 @@ func addSmoothie(w http.ResponseWriter, r *http.Request) {
 	// update Array Smoothies
 	Smoothies = append(Smoothies, smoothie)
 	json.NewEncoder(w).Encode(smoothie)
+}
+
+func deleteSmoothie(w http.ResponseWriter, r *http.Request) {
+	// mengambil parameter dari vars
+	vars := mux.Vars(r)
+	// ambill key id
+	key := vars["id"]
+
+	// looping array dari smoothie kemudan cek idnya
+	for index, smoothie := range Smoothies {
+		// jika id sama dengan key
+		if smoothie.ID == key {
+			// kemudian hapus smoothie
+			Smoothies = append(Smoothies[:index], Smoothies[index+1:]...)
+		}
+	}
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
