@@ -47,7 +47,27 @@ func addSmoothie(w http.ResponseWriter, r *http.Request) {
 	Smoothies = append(Smoothies, smoothie)
 	json.NewEncoder(w).Encode(smoothie)
 }
+func updateSmoothie(w http.ResponseWriter, r *http.Request) {
+	// Mengambil body dari POST
+	// Unmarshall ke Smoothie struct
+	// Tambahkan ke array Smoothies
+	body, _ := ioutil.ReadAll(r.Body)
+	var smoothie Smoothie
+	json.Unmarshal(body, &smoothie)
 
+	// mengambil parameter dari vars
+	vars := mux.Vars(r)
+	// ambill key id
+	key := vars["id"]
+	// looping array dari smoothie kemudan cek idnya
+	for index, smoothie := range Smoothies {
+		// jika id sama dengan key
+		if smoothie.ID == key {
+			// update Array Smoothies
+			Smoothies = append(Smoothies[:index], smoothie)
+		}
+	}
+}
 func deleteSmoothie(w http.ResponseWriter, r *http.Request) {
 	// mengambil parameter dari vars
 	vars := mux.Vars(r)
@@ -73,6 +93,8 @@ func handleRequest() {
 	router.HandleFunc("/smoothies", allSmoothie).Methods("GET")
 	router.HandleFunc("/smoothie", addSmoothie).Methods("POST")
 	router.HandleFunc("/smoothie/{id}", showSmoothie).Methods("GET")
+	router.HandleFunc("/smoothie/{id}", updateSmoothie).Methods("PUT")
+	router.HandleFunc("/smoothie/{id}", deleteSmoothie).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
